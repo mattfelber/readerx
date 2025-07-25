@@ -1,19 +1,19 @@
-# 🇩🇪 tradux - Interactive Language Learning Tool
+# 🌎 readerX - Interactive Language Learning Tool
 
-A modern, user-friendly web application designed to help German language learners read and understand German texts with ease. Built with React and featuring real-time translations, this tool makes reading German texts more accessible and enjoyable.
+A modern, user-friendly web application designed to help language learners read and understand texts in multiple languages with ease. Built with React and featuring real-time translations, this tool makes reading foreign language texts more accessible and enjoyable.
 
-![tradux Demo](demo-screenshot.png)
+![readerX Demo](demo-screenshot.png)
 
 ## ✨ Features
 
 ### 📚 Interactive Reading Experience
-- **Single Word Translation**: Click on any German word to see its English translation instantly
+- **Single Word Translation**: Click on any word to see its translation instantly
 - **Phrase Translation**: Select multiple words to get contextual translations of phrases or sentences
 - **Smart Word Selection**: Automatically selects complete words even when clicking or selecting partially
 - **Clean Interface**: Translations appear in elegant popups near the selected text
 
 ### 📝 Text Management
-- **File Upload**: Easily upload German text files through drag-and-drop or file selection
+- **File Upload**: Easily upload text files through drag-and-drop or file selection
 - **Format Support**: Compatible with plain text (.txt) files
 - **Dynamic Display**: Text is formatted for optimal readability with clear word separation
 
@@ -33,12 +33,12 @@ A modern, user-friendly web application designed to help German language learner
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/mattfelber/tradux.git
+   git clone https://github.com/mattfelber/readerX.git
    ```
 
 2. Install dependencies:
    ```bash
-   cd tradux
+   cd readerX
    npm install
    ```
 
@@ -68,11 +68,11 @@ A modern, user-friendly web application designed to help German language learner
 ## 📖 How to Use
 
 1. **Upload Text**:
-   - Drag and drop a German text file onto the upload area
+   - Drag and drop a text file onto the upload area
    - Or click to select a file from your computer
 
 2. **Get Word Translations**:
-   - Click any word to see its English translation
+   - Click any word to see its translation
    - Translation appears in a popup above or below the word
 
 3. **Get Phrase Translations**:

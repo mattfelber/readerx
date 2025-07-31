@@ -1,6 +1,30 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Paper, Typography, Box, CircularProgress } from '@mui/material';
+import {
+  Paper,
+  Typography,
+  Box,
+  CircularProgress,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Grid2,
+} from '@mui/material';
 import { translateText } from '../services/translationService';
+
+// Language options for the dropdowns
+const languageOptions = [
+  { code: 'de', label: 'German' },
+  { code: 'en', label: 'English' },
+  { code: 'es', label: 'Spanish' },
+  { code: 'fr', label: 'French' },
+  { code: 'it', label: 'Italian' },
+  { code: 'pt', label: 'Portuguese' },
+  { code: 'nl', label: 'Dutch' },
+  { code: 'pl', label: 'Polish' },
+  { code: 'ru', label: 'Russian' },
+  { code: 'zh', label: 'Chinese' },
+];
 
 const TextReader = () => {
   const [text, setText] = useState('');
@@ -11,6 +35,8 @@ const TextReader = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [mouseDownTime, setMouseDownTime] = useState(0);
+  const [sourceLang, setSourceLang] = useState('de');
+  const [targetLang, setTargetLang] = useState('en');
   const textRef = useRef(null);
   const translationTimeoutRef = useRef(null);
 
@@ -104,7 +130,8 @@ const TextReader = () => {
         setSelectionPosition(position);
 
         try {
-          const translatedText = await translateText(text);
+          // Call the translation service passing the selected text and languages
+          const translatedText = await translateText(text, sourceLang, targetLang);
           setSelectionTranslation(translatedText);
         } catch (error) {
           console.error('Translation error:', error);
@@ -126,7 +153,8 @@ const TextReader = () => {
     setPopupPosition(position);
 
     try {
-      const translatedText = await translateText(word);
+      // Call the translation service passing the word and languages
+      const translatedText = await translateText(word, sourceLang, targetLang);
       setTranslation(translatedText);
     } catch (error) {
       console.error('Translation error:', error);
@@ -223,6 +251,7 @@ const TextReader = () => {
     };
   }, []);
 
+  // Language options for the dropdowns
   return (
     <div className="reader-container" onClick={clearTranslations}>
       <div className="app-header" onClick={(e) => e.stopPropagation()}>
@@ -232,6 +261,41 @@ const TextReader = () => {
         <Typography variant="subtitle1" color="textSecondary">
           Click words for translations or select text for phrase translations
         </Typography>
+      
+      <Grid2 container spacing={2} mt={2}>
+          <Grid2 item>
+            <FormControl size="small">
+              <InputLabel>From</InputLabel>
+              <Select
+                label="From"
+                value={sourceLang}
+                onChange={(e) => setSourceLang(e.target.value)}
+              >
+                {languageOptions.map((lang) => (
+                  <MenuItem key={lang.code} value={lang.code}>
+                    {lang.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid2>
+          <Grid2 item>
+            <FormControl size="small">
+              <InputLabel>To</InputLabel>
+              <Select
+                label="To"
+                value={targetLang}
+                onChange={(e) => setTargetLang(e.target.value)}
+              >
+                {languageOptions.map((lang) => (
+                  <MenuItem key={lang.code} value={lang.code}>
+                    {lang.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid2>
+        </Grid2>
       </div>
 
       <div

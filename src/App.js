@@ -1,43 +1,29 @@
 import React from 'react';
-import { ThemeProvider, createTheme } from '@mui/material';
+import { Box, AppBar, Toolbar, Typography } from '@mui/material';
+import { ThemeContextProvider } from './contexts/ThemeContext';
 import TextReader from './components/TextReader';
 import ApiTest from './components/ApiTest';
+import ThemeToggle from './components/ThemeToggle';
 import './App.css';
-
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: '#007AFF',
-    },
-    background: {
-      default: '#F5F5F7',
-    },
-  },
-  typography: {
-    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-  },
-  components: {
-    MuiPaper: {
-      defaultProps: {
-        elevation: 0,
-      },
-      styleOverrides: {
-        root: {
-          backgroundColor: '#ffffff',
-        },
-      },
-    },
-  },
-});
 
 function App() {
   return (
-    <ThemeProvider theme={theme}>
-      <div className="App">
-        <ApiTest />
-        <TextReader />
-      </div>
-    </ThemeProvider>
+    <ThemeContextProvider>
+      <Box sx={{ flexGrow: 1 }}>
+        <AppBar position="static" sx={{ mb: 2 }}>
+          <Toolbar>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              Tradux
+            </Typography>
+            <ThemeToggle />
+          </Toolbar>
+        </AppBar>
+        <div className="App">
+          <ApiTest />
+          <TextReader />
+        </div>
+      </Box>
+    </ThemeContextProvider>
   );
 }
 

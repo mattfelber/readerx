@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from "react";
 import {
   Paper,
   Typography,
@@ -9,25 +9,25 @@ import {
   FormControl,
   InputLabel,
   Grid2,
-} from '@mui/material';
-import { translateText } from '../services/translationService';
+} from "@mui/material";
+import { translateText } from "../services/translationService";
 
 // Language options for the dropdowns
 const languageOptions = [
-  { code: 'de', label: 'German' },
-  { code: 'en', label: 'English' },
-  { code: 'es', label: 'Spanish' },
-  { code: 'fr', label: 'French' },
-  { code: 'it', label: 'Italian' },
-  { code: 'pt', label: 'Portuguese' },
-  { code: 'nl', label: 'Dutch' },
-  { code: 'pl', label: 'Polish' },
-  { code: 'ru', label: 'Russian' },
-  { code: 'zh', label: 'Chinese' },
+  { code: "de", label: "German" },
+  { code: "en", label: "English" },
+  { code: "es", label: "Spanish" },
+  { code: "fr", label: "French" },
+  { code: "it", label: "Italian" },
+  { code: "pt", label: "Portuguese" },
+  { code: "nl", label: "Dutch" },
+  { code: "pl", label: "Polish" },
+  { code: "ru", label: "Russian" },
+  { code: "zh", label: "Chinese" },
 ];
 
 const TextReader = () => {
-  const [text, setText] = useState('');
+  const [text, setText] = useState("");
   const [translation, setTranslation] = useState(null);
   const [selectionTranslation, setSelectionTranslation] = useState(null);
   const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
@@ -35,17 +35,22 @@ const TextReader = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [mouseDownTime, setMouseDownTime] = useState(0);
-  const [sourceLang, setSourceLang] = useState('de');
-  const [targetLang, setTargetLang] = useState('en');
+  const [sourceLang, setSourceLang] = useState("de");
+  const [targetLang, setTargetLang] = useState("en");
   const textRef = useRef(null);
   const translationTimeoutRef = useRef(null);
+
+  const getSourceLangLabel = () => {
+    const lang = languageOptions.find((l) => l.code === sourceLang);
+    return lang ? lang.label : "your";
+  };
 
   const calculatePosition = (rect) => {
     const margin = 10;
     const minSpaceNeeded = 60;
-    const x = rect.left + (rect.width / 2);
+    const x = rect.left + rect.width / 2;
     let y = rect.top - margin;
-    
+
     if (rect.top < minSpaceNeeded) {
       y = rect.bottom + margin;
     }
@@ -74,7 +79,10 @@ const TextReader = () => {
     }
 
     // If either node is not a word span, return null
-    if (!startNode.classList?.contains('word') || !endNode.classList?.contains('word')) {
+    if (
+      !startNode.classList?.contains("word") ||
+      !endNode.classList?.contains("word")
+    ) {
       return null;
     }
 
@@ -89,7 +97,7 @@ const TextReader = () => {
 
     return {
       text: newRange.toString().trim(),
-      range: newRange
+      range: newRange,
     };
   };
 
@@ -101,7 +109,7 @@ const TextReader = () => {
     translationTimeoutRef.current = setTimeout(async () => {
       const selection = window.getSelection();
       const selectedText = selection.toString().trim();
-      
+
       // Clear translations if no text is selected
       if (!selectedText) {
         clearTranslations();
@@ -120,22 +128,26 @@ const TextReader = () => {
       }
 
       const { text, range } = expandedSelection;
-      
+
       if (text) {
         setTranslation(null);
         setIsLoading(true);
-        
+
         const rect = range.getBoundingClientRect();
         const position = calculatePosition(rect);
         setSelectionPosition(position);
 
         try {
           // Call the translation service passing the selected text and languages
-          const translatedText = await translateText(text, sourceLang, targetLang);
+          const translatedText = await translateText(
+            text,
+            sourceLang,
+            targetLang
+          );
           setSelectionTranslation(translatedText);
         } catch (error) {
-          console.error('Translation error:', error);
-          setSelectionTranslation('Translation error occurred');
+          console.error("Translation error:", error);
+          setSelectionTranslation("Translation error occurred");
         } finally {
           setIsLoading(false);
         }
@@ -147,7 +159,7 @@ const TextReader = () => {
     event.stopPropagation();
     setSelectionTranslation(null);
     setIsLoading(true);
-    
+
     const rect = event.target.getBoundingClientRect();
     const position = calculatePosition(rect);
     setPopupPosition(position);
@@ -157,8 +169,8 @@ const TextReader = () => {
       const translatedText = await translateText(word, sourceLang, targetLang);
       setTranslation(translatedText);
     } catch (error) {
-      console.error('Translation error:', error);
-      setTranslation('Translation error occurred');
+      console.error("Translation error:", error);
+      setTranslation("Translation error occurred");
     } finally {
       setIsLoading(false);
     }
@@ -166,7 +178,7 @@ const TextReader = () => {
 
   const renderWords = (text) => {
     return text.split(/(\s+)/).map((word, index) => {
-      if (word.trim() === '') return word;
+      if (word.trim() === "") return word;
       return (
         <span
           key={index}
@@ -194,8 +206,7 @@ const TextReader = () => {
             }
             setMouseDownTime(0);
             setIsDragging(false);
-          }}
-        >
+          }}>
           {word}
         </span>
       );
@@ -261,16 +272,15 @@ const TextReader = () => {
         <Typography variant="subtitle1" color="textSecondary">
           Click words for translations or select text for phrase translations
         </Typography>
-      
-      <Grid2 container spacing={2} mt={2}>
+
+        <Grid2 container spacing={2} mt={2}>
           <Grid2 item>
             <FormControl size="small">
               <InputLabel>From</InputLabel>
               <Select
                 label="From"
                 value={sourceLang}
-                onChange={(e) => setSourceLang(e.target.value)}
-              >
+                onChange={(e) => setSourceLang(e.target.value)}>
                 {languageOptions.map((lang) => (
                   <MenuItem key={lang.code} value={lang.code}>
                     {lang.label}
@@ -285,8 +295,7 @@ const TextReader = () => {
               <Select
                 label="To"
                 value={targetLang}
-                onChange={(e) => setTargetLang(e.target.value)}
-              >
+                onChange={(e) => setTargetLang(e.target.value)}>
                 {languageOptions.map((lang) => (
                   <MenuItem key={lang.code} value={lang.code}>
                     {lang.label}
@@ -299,23 +308,25 @@ const TextReader = () => {
       </div>
 
       <div
-        className={`upload-section ${isDragging ? 'dragging' : ''}`}
+        className={`upload-section ${isDragging ? "dragging" : ""}`}
         onDragEnter={handleDragEnter}
         onDragOver={(e) => e.preventDefault()}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        onClick={(e) => e.stopPropagation()}
-      >
+        onClick={(e) => e.stopPropagation()}>
         <input
           type="file"
           accept=".txt"
           onChange={handleFileUpload}
-          style={{ display: 'none' }}
+          style={{ display: "none" }}
           id="file-upload"
         />
         <div className="upload-icon">📄</div>
         <label htmlFor="file-upload">
-          <Typography variant="h6" color="primary" style={{ cursor: 'pointer' }}>
+          <Typography
+            variant="h6"
+            color="primary"
+            style={{ cursor: "pointer" }}>
             Drop your text file here for translation
           </Typography>
           <Typography variant="body2" color="textSecondary">
@@ -334,11 +345,12 @@ const TextReader = () => {
           if (e.target === e.currentTarget) {
             clearTranslations();
           }
-        }}
-      >
-        {text ? renderWords(text) : (
+        }}>
+        {text ? (
+          renderWords(text)
+        ) : (
           <Typography variant="body1" color="textSecondary" align="center">
-            Your German text will appear here
+            Your {getSourceLangLabel()} text will appear here
           </Typography>
         )}
       </Paper>
@@ -349,10 +361,9 @@ const TextReader = () => {
           style={{
             left: `${popupPosition.x}px`,
             top: `${popupPosition.y}px`,
-            transform: 'translate(-50%, -100%)'
+            transform: "translate(-50%, -100%)",
           }}
-          onClick={(e) => e.stopPropagation()}
-        >
+          onClick={(e) => e.stopPropagation()}>
           <div className="translation-popup">
             {isLoading ? (
               <CircularProgress size={20} className="loading-spinner" />
@@ -369,10 +380,9 @@ const TextReader = () => {
           style={{
             left: `${selectionPosition.x}px`,
             top: `${selectionPosition.y}px`,
-            transform: 'translate(-50%, -100%)'
+            transform: "translate(-50%, -100%)",
           }}
-          onClick={(e) => e.stopPropagation()}
-        >
+          onClick={(e) => e.stopPropagation()}>
           <div className="selection-translation">
             <Typography variant="body1">
               <strong>Translation:</strong> {selectionTranslation}

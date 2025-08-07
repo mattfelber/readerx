@@ -1,11 +1,13 @@
 import { supabase } from "../supabaseClient";
 
+const redirectToUrl = process.env.REACT_APP_BASE_URL + "/dashboard";
+
 export default function Login() {
   const handleGitHubLogin = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "github",
       options: {
-        redirectTo: window.location.origin + "/dashboard",
+        redirectTo: redirectToUrl,
       },
     });
     if (error) {

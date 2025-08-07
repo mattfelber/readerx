@@ -11,6 +11,8 @@ import {
   Grid2,
 } from "@mui/material";
 import { translateText } from "../services/translationService";
+import { supabase } from '../supabaseClient';
+import SaveWordButton from './SaveWordButton';
 
 // Language options for the dropdowns
 const languageOptions = [
@@ -37,8 +39,21 @@ const TextReader = () => {
   const [mouseDownTime, setMouseDownTime] = useState(0);
   const [sourceLang, setSourceLang] = useState("de");
   const [targetLang, setTargetLang] = useState("en");
+  const [user, setUser] = useState(null);
+
+  const [selectedWord, setSelectedWord] = useState(null);
+
   const textRef = useRef(null);
   const translationTimeoutRef = useRef(null);
+
+  
+
+  // get user info from supabase
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUser(user);
+    });
+  }, []);
 
   const getSourceLangLabel = () => {
     const lang = languageOptions.find((l) => l.code === sourceLang);
@@ -163,6 +178,7 @@ const TextReader = () => {
     const rect = event.target.getBoundingClientRect();
     const position = calculatePosition(rect);
     setPopupPosition(position);
+    setSelectedWord(word);
 
     try {
       // Call the translation service passing the word and languages
@@ -359,16 +375,29 @@ const TextReader = () => {
         <div
           className="translation-container"
           style={{
+            position: 'fixed',
             left: `${popupPosition.x}px`,
             top: `${popupPosition.y}px`,
             transform: "translate(-50%, -100%)",
+            zIndex: 9999, 
+            pointerEvents: 'auto' 
           }}
           onClick={(e) => e.stopPropagation()}>
           <div className="translation-popup">
             {isLoading ? (
               <CircularProgress size={20} className="loading-spinner" />
             ) : (
+               <>
               <Typography variant="body1">{translation}</Typography>
+              {/*Button to save words*/}
+              <SaveWordButton
+                userId={user?.id}
+                word={selectedWord}
+                translation={translation}
+                sourceLang={sourceLang}
+                targetLang={targetLang}
+              />
+              </>
             )}
           </div>
         </div>

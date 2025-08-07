@@ -6,6 +6,7 @@ import { ThemeContextProvider } from "./contexts/ThemeContext";
 import ThemeToggle from "./components/ThemeToggle";
 import Login from "./components/Login";
 import Dashboard from "./components/Dashboard";
+import SavedWords from "./components/SavedWords";
 import PrivateRoute from "./PrivateRoute";
 import ApiTest from "./components/ApiTest";
 import TextReader from "./components/TextReader";
@@ -34,6 +35,16 @@ function App() {
                   <Dashboard>
                     <ApiTest />
                     <TextReader />
+                  </Dashboard>
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/saved-words"
+              element={
+                <PrivateRoute>
+                  <Dashboard>
+                    <SavedWords />
                   </Dashboard>
                 </PrivateRoute>
               }
